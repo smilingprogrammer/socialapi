@@ -11,7 +11,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-public class User {
+public class AppUser {
 
     private String firstname;
     private String lastname;
@@ -19,7 +19,7 @@ public class User {
     private String username;
     private String password;
 
-    public User(String firstname, String lastname, String email, String username, String password) {
+    public AppUser(String firstname, String lastname, String email, String username, String password) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
