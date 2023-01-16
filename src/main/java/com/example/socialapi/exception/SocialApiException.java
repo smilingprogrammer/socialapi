@@ -1,6 +1,5 @@
 package com.example.socialapi.exception;
 
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 public class SocialApiException extends RuntimeException{
