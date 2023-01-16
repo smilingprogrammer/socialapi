@@ -1,22 +1,13 @@
 package com.example.socialapi.model;
 
-import jakarta.persistence.Entity;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@Entity
-public class AppUser implements UserDetails {
+public class AppUserDetails implements UserDetails {
+
 
     private Long id;
     private String firstname;
@@ -27,7 +18,7 @@ public class AppUser implements UserDetails {
 //    private AppUserRole appUserRole;
 
     private Collection<? extends GrantedAuthority> appUserRole;
-    public AppUser(String firstname, String lastname, String email,
+    public AppUserDetails(String firstname, String lastname, String email,
                    String username, String password/*,
                    Collection<? extends GrantedAuthority> appUserRole*/) {
         this.firstname = firstname;
@@ -36,15 +27,25 @@ public class AppUser implements UserDetails {
         this.username = username;
         this.password = password;
 
-//        if (appUserRole == null){
-//            this.appUserRole = null;
-//        } else {
-//            this.appUserRole = new ArrayList<>(appUserRole);
-//        }
+        if (appUserRole == null){
+            this.appUserRole = null;
+        } else {
+            this.appUserRole = new ArrayList<>(appUserRole);
+        }
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
+    }
+
+    @Override
+    public String getPassword() {
+        return null;
+    }
+
+    @Override
+    public String getUsername() {
         return null;
     }
 

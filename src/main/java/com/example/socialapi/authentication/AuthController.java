@@ -30,9 +30,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> signUpUser(@RequestBody RegistrationRequest registrationRequest){
 
         if (Boolean.TRUE.equals(userRepository.existsByUsername(registrationRequest.getUsername()))){
-
             throw new SocialApiException(HttpStatus.BAD_REQUEST, "");
-
         }
 
         String firstname = registrationRequest.getFirstname().toLowerCase();
