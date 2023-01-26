@@ -1,13 +1,12 @@
 package com.example.socialapi.model;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -18,6 +17,16 @@ import java.util.Collection;
 @Entity
 public class AppUser implements UserDetails {
 
+    @SequenceGenerator(
+            name = "student_sequence",
+            sequenceName = "user_sequence",
+            allocationSize = 1
+    )
+    @Id
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "user_sequence"
+    )
     private Long id;
     private String firstname;
     private String lastname;
@@ -41,6 +50,16 @@ public class AppUser implements UserDetails {
 //        } else {
 //            this.appUserRole = new ArrayList<>(appUserRole);
 //        }
+    }
+
+
+
+    public String getFirstName(){
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
     }
 
     @Override
