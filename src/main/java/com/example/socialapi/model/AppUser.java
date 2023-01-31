@@ -35,7 +35,7 @@ public class AppUser implements UserDetails {
     private String password;
 //    private AppUserRole appUserRole;
 
-    private Collection<? extends GrantedAuthority> appUserRole;
+//    private Collection<? extends GrantedAuthority> appUserRole;
     public AppUser(String firstname, String lastname, String email,
                    String username, String password/*,
                    Collection<? extends GrantedAuthority> appUserRole*/) {
