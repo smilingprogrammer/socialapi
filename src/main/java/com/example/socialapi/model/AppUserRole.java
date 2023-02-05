@@ -1,7 +1,26 @@
 package com.example.socialapi.model;
 
-public enum AppUserRole {
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.NaturalId;
 
-    USER,
-    ADMIN
+@Entity
+@AllArgsConstructor
+@NoArgsConstructor
+public class AppUserRole {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @NaturalId
+    @Column(name = "name")
+    private AppUserRoleName name;
+
+    public AppUserRole(AppUserRoleName name) {
+        this.name = name;
+    }
 }
+

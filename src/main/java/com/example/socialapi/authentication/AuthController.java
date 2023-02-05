@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("api/v1/auth")
 public class AuthController {
 
     private BCryptPasswordEncoder passwordEncoder;
@@ -29,8 +28,17 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse> signUpUser(@RequestBody RegistrationRequest registrationRequest){
 
-        if (Boolean.TRUE.equals(userRepository.existsByUsername(registrationRequest.getUsername()))){
-            throw new SocialApiException(HttpStatus.BAD_REQUEST, "");
+        boolean emailExist = userRepository
+                .findByUsername(registrationRequest.getEmail()).isPresent();
+        boolean userNameExist = userRepository
+                .findByUsername(registrationRequest.getUsername()).isPresent();
+
+        if (emailExist){
+            throw new SocialApiException(HttpStatus.BAD_REQUEST, "Username already taken");
+        }
+
+        if (userNameExist){
+            throw new SocialApiException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
 
         String firstname = registrationRequest.getFirstname().toLowerCase();

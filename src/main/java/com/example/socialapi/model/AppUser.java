@@ -9,13 +9,14 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Getter
 @Setter
 @EqualsAndHashCode
 @NoArgsConstructor
 @Entity
-public class AppUser implements UserDetails {
+public class AppUser {
 
     @SequenceGenerator(
             name = "student_sequence",
@@ -33,57 +34,21 @@ public class AppUser implements UserDetails {
     private String email;
     private String username;
     private String password;
-//    private AppUserRole appUserRole;
 
-//    private Collection<? extends GrantedAuthority> appUserRole;
+    private List<AppUserRole> roles;
+
     public AppUser(String firstname, String lastname, String email,
-                   String username, String password/*,
-                   Collection<? extends GrantedAuthority> appUserRole*/) {
+                   String username, String password) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
         this.username = username;
         this.password = password;
-
-//        if (appUserRole == null){
-//            this.appUserRole = null;
-//        } else {
-//            this.appUserRole = new ArrayList<>(appUserRole);
-//        }
     }
 
+    public List<AppUserRole> getRoles() {
 
-
-    public String getFirstName(){
-        return firstname;
+        return roles == null ? null : new ArrayList<>(roles);
     }
 
-    public String getLastname() {
-        return lastname;
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
 }
