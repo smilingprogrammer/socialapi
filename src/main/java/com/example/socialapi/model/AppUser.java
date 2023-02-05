@@ -35,7 +35,7 @@ public class AppUser {
     private String username;
     private String password;
 
-    private List<AppUserRole> roles;
+//    private List<AppUserRole> roles;
 
     public AppUser(String firstname, String lastname, String email,
                    String username, String password) {
@@ -46,9 +46,9 @@ public class AppUser {
         this.password = password;
     }
 
-    public List<AppUserRole> getRoles() {
-
-        return roles == null ? null : new ArrayList<>(roles);
-    }
+//    public List<AppUserRole> getRoles() {
+//
+//        return roles == null ? null : new ArrayList<>(roles);
+//    }
 
 }
