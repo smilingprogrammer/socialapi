@@ -2,6 +2,7 @@ package com.example.socialapi.authentication;
 
 import com.example.socialapi.exception.SocialApiException;
 import com.example.socialapi.model.AppUser;
+import com.example.socialapi.model.AppUserDetails;
 import com.example.socialapi.repository.UserRepository;
 import com.example.socialapi.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,14 @@ import java.net.URI;
 @RequestMapping("api/v1/auth")
 public class AuthController {
 
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
     private UserRepository userRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse> signUpUser(@RequestBody RegistrationRequest registrationRequest){
+    public String signUpUser(@RequestBody RegistrationRequest registrationRequest){
 
         boolean emailExist = userRepository
                 .findByUsername(registrationRequest.getEmail()).isPresent();
@@ -47,14 +49,18 @@ public class AuthController {
         String username = registrationRequest.getUsername().toLowerCase();
         String password = passwordEncoder.encode(registrationRequest.getPassword());
 
-        AppUser appUser = new AppUser(firstname, lastname, email, username, password);
+        AppUserDetails appUserDetails = new AppUserDetails(firstname, lastname, email, username, password);
 
-        AppUser result = userRepository.save(appUser);
+        appUserDetails.setPassword(password);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/{userId}")
-                .buildAndExpand(result.getId()).toUri();
+//        AppUserDetails result =
+        userRepository.save(appUserDetails);
 
-        return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "Registration Successful"));
+//        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/{userId}")
+//                .buildAndExpand(result.getId()).toUri();
+
+//        return ResponseEntity.created(location)
+//                .body(new ApiResponse(true, "Registration Successful"));
+        return "It works";
     }
 }

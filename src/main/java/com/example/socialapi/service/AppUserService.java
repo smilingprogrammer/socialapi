@@ -22,9 +22,9 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        AppUser appUser = userRepository.findByUsername(username)
+        AppUserDetails appUserDetails = userRepository.findByUsername(username)
                 .orElseThrow(() ->
                         new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, username)));
-        return AppUserDetails.create(appUser);
+        return AppUserDetails.create(appUserDetails);
     }
 }
