@@ -8,6 +8,10 @@ import com.example.socialapi.response.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +27,8 @@ public class AuthController {
 
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
-
+    @Autowired
+    private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
 
@@ -38,7 +43,6 @@ public class AuthController {
         if (emailExist){
             throw new SocialApiException(HttpStatus.BAD_REQUEST, "Username already taken");
         }
-
         if (userNameExist){
             throw new SocialApiException(HttpStatus.BAD_REQUEST, "Email already exists");
         }
@@ -49,18 +53,21 @@ public class AuthController {
         String username = registrationRequest.getUsername().toLowerCase();
         String password = passwordEncoder.encode(registrationRequest.getPassword());
 
-        AppUserDetails appUserDetails = new AppUserDetails(firstname, lastname, email, username, password);
+        AppUserDetails appUser = new AppUserDetails(firstname, lastname, email, username, password);
 
-        appUserDetails.setPassword(password);
+        userRepository.save(appUser);
 
-//        AppUserDetails result =
-        userRepository.save(appUserDetails);
-
-//        URI location = ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/users/{userId}")
-//                .buildAndExpand(result.getId()).toUri();
-
-//        return ResponseEntity.created(location)
-//                .body(new ApiResponse(true, "Registration Successful"));
         return "It works";
+    }
+
+    @PostMapping("/signin")
+    public String signInUser(@RequestBody RegistrationRequest registrationRequest){
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(registrationRequest.getUsername(),
+                        registrationRequest.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "Signed in";
     }
 }
