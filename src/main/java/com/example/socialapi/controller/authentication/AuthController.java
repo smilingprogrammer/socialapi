@@ -55,10 +55,10 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public String signInUser(@RequestBody RegistrationRequest registrationRequest){
+    public String signInUser(@RequestBody SignInRequest signInRequest){
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(registrationRequest.getUsername(),
-                        registrationRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(signInRequest.getUsername(),
+                        signInRequest.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
