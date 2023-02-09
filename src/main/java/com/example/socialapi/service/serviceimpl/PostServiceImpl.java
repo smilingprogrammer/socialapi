@@ -4,15 +4,34 @@ import com.example.socialapi.constant.AppConstant;
 import com.example.socialapi.exception.BadRequestException;
 import com.example.socialapi.model.AppUserDetails;
 import com.example.socialapi.model.UserPost;
+import com.example.socialapi.repository.PostRepository;
 import com.example.socialapi.response.ApiResponse;
 import com.example.socialapi.response.PageResponse;
 import com.example.socialapi.service.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import java.util.Collections;
+import java.util.List;
+import static com.example.socialapi.constant.AppConstant.CREATED_AT;
 
 public class PostServiceImpl implements PostService {
 
+    @Autowired
+    private PostRepository postRepository;
+
     @Override
     public PageResponse<UserPost> getAllPosts(int page, int size) {
-        return null;
+        validatePageAndSize(page, size);
+
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+        Page<UserPost> post = postRepository.findAll(pageable);
+        List<UserPost> content = post.getNumberOfElements() == 0? Collections.emptyList() : post.getContent();
+
+        return new PageResponse<>(content, post.getNumber(), post.getSize(), post.getTotalElements(),
+                post.getTotalPages(), post.isLast());
     }
 
     @Override
