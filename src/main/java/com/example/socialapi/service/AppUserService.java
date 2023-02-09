@@ -1,6 +1,5 @@
 package com.example.socialapi.service;
 
-import com.example.socialapi.model.AppUser;
 import com.example.socialapi.model.AppUserDetails;
 import com.example.socialapi.repository.UserRepository;
 import lombok.AllArgsConstructor;

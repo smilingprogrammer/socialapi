@@ -1,6 +1,5 @@
 package com.example.socialapi.security;
 
-import com.example.socialapi.authentication.AuthController;
 import com.example.socialapi.service.AppUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +12,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -27,6 +25,7 @@ public class WebSecurityConfig {
     @Autowired
     private AppUserService appUserService;
 
+    @Bean
     public AuthenticationManager authManagerBuilder(HttpSecurity http)
             throws Exception{
         AuthenticationManagerBuilder authenticationManagerBuilder =

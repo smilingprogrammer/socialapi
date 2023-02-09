@@ -11,44 +11,44 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-@Getter
-@Setter
-@EqualsAndHashCode
-@NoArgsConstructor
-@Entity
-public class AppUser {
-
-    @SequenceGenerator(
-            name = "student_sequence",
-            sequenceName = "user_sequence",
-            allocationSize = 1
-    )
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "user_sequence"
-    )
-    private Long id;
-    private String firstname;
-    private String lastname;
-    private String email;
-    private String username;
-    private String password;
+//@Getter
+//@Setter
+//@EqualsAndHashCode
+//@NoArgsConstructor
+//@Entity
+//public class AppUser {
+//
+//    @SequenceGenerator(
+//            name = "student_sequence",
+//            sequenceName = "user_sequence",
+//            allocationSize = 1
+//    )
+//    @Id
+//    @GeneratedValue(
+//            strategy = GenerationType.SEQUENCE,
+//            generator = "user_sequence"
+//    )
+//    private Long id;
+//    private String firstname;
+//    private String lastname;
+//    private String email;
+//    private String username;
+//    private String password;
 
 //    private List<AppUserRole> roles;
 
-    public AppUser(String firstname, String lastname, String email,
-                   String username, String password) {
-        this.firstname = firstname;
-        this.lastname = lastname;
-        this.email = email;
-        this.username = username;
-        this.password = password;
-    }
+//    public AppUser(String firstname, String lastname, String email,
+//                   String username, String password) {
+//        this.firstname = firstname;
+//        this.lastname = lastname;
+//        this.email = email;
+//        this.username = username;
+//        this.password = password;
+//    }
 
 //    public List<AppUserRole> getRoles() {
 //
 //        return roles == null ? null : new ArrayList<>(roles);
 //    }
 
-}
+//}

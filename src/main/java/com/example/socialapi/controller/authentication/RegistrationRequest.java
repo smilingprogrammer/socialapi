@@ -1,4 +1,4 @@
-package com.example.socialapi.authentication;
+package com.example.socialapi.controller.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

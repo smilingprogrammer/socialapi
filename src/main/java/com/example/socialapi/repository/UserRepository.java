@@ -1,7 +1,6 @@
 package com.example.socialapi.repository;
 
 import com.example.socialapi.exceptions.ResourceNotFoundException;
-import com.example.socialapi.model.AppUser;
 import com.example.socialapi.model.AppUserDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
