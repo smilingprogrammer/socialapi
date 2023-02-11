@@ -7,6 +7,7 @@ import com.example.socialapi.exception.ResourceNotFoundException;
 import com.example.socialapi.exception.UnauthorizedException;
 import com.example.socialapi.model.AppUserDetails;
 import com.example.socialapi.model.UserPost;
+import com.example.socialapi.model.userrole.RoleName;
 import com.example.socialapi.repository.PostRepository;
 import com.example.socialapi.repository.UserRepository;
 import com.example.socialapi.response.ApiResponse;
@@ -80,7 +81,7 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
 
         if (post.getUser().equals(currentUser.getId()) || currentUser.getAuthorities().contains(
-                new SimpleGrantedAuthority())){
+                new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
             postRepository.deleteById(id);
             return new ApiResponse(Boolean.TRUE, "You successfully deleted post");
         }
