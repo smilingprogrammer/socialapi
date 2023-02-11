@@ -41,6 +41,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponse<UserPost> getPostsByCategory(Long id, int page, int size) {
+        validatePageAndSize(page, size);
         return null;
     }
 
