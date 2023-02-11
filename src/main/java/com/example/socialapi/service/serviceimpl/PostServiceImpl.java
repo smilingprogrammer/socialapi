@@ -1,10 +1,14 @@
 package com.example.socialapi.service.serviceimpl;
 
 import com.example.socialapi.constant.AppConstant;
+import com.example.socialapi.constant.AppUtils;
 import com.example.socialapi.exception.BadRequestException;
+import com.example.socialapi.exception.ResourceNotFoundException;
+import com.example.socialapi.exception.UnauthorizedException;
 import com.example.socialapi.model.AppUserDetails;
 import com.example.socialapi.model.UserPost;
 import com.example.socialapi.repository.PostRepository;
+import com.example.socialapi.repository.UserRepository;
 import com.example.socialapi.response.ApiResponse;
 import com.example.socialapi.response.PageResponse;
 import com.example.socialapi.service.PostService;
@@ -13,14 +17,20 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.util.Collections;
 import java.util.List;
-import static com.example.socialapi.constant.AppConstant.CREATED_AT;
+
+import static com.example.socialapi.constant.AppConstant.*;
 
 public class PostServiceImpl implements PostService {
 
     @Autowired
     private PostRepository postRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public PageResponse<UserPost> getAllPosts(int page, int size) {
@@ -36,11 +46,20 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PageResponse<UserPost> getPostsByCreatedBy(String username, int page, int size) {
-        return null;
+        validatePageAndSize(page, size);
+        AppUserDetails appUserDetails = userRepository.getUserByName(username);
+        Pageable pageable = PageRequest.of(page, size, Sort.Direction.DESC, CREATED_AT);
+        Page<UserPost> post = postRepository.findByCreatedBy(appUserDetails.getId(), pageable);
+        List<UserPost> content = post.getNumberOfElements() == 0 ? Collections.emptyList() :
+                post.getContent();
+
+        return new PageResponse<>(content, post.getNumber(), post.getSize(), post.getTotalElements(),
+                post.getTotalPages(), post.isLast());
     }
 
     @Override
     public PageResponse<UserPost> getPostsByCategory(Long id, int page, int size) {
+        AppUtils.validatePageNumberAndSize(page, size);
         validatePageAndSize(page, size);
         return null;
     }
@@ -57,7 +76,18 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public ApiResponse deletePost(Long id, AppUserDetails currentUser) {
-        return null;
+        UserPost post = postRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
+
+        if (post.getUser().equals(currentUser.getId()) || currentUser.getAuthorities().contains(
+                new SimpleGrantedAuthority())){
+            postRepository.deleteById(id);
+            return new ApiResponse(Boolean.TRUE, "You successfully deleted post");
+        }
+
+        ApiResponse apiResponse =
+                new ApiResponse(Boolean.FALSE, "You have no authority to delete this post");
+        throw new UnauthorizedException(apiResponse);
     }
 
     @Override
