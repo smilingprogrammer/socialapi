@@ -6,12 +6,15 @@ import com.example.socialapi.exception.BadRequestException;
 import com.example.socialapi.exception.ResourceNotFoundException;
 import com.example.socialapi.exception.UnauthorizedException;
 import com.example.socialapi.model.AppUserDetails;
+import com.example.socialapi.model.Category;
 import com.example.socialapi.model.UserPost;
 import com.example.socialapi.model.userrole.RoleName;
+import com.example.socialapi.repository.CategoryRepository;
 import com.example.socialapi.repository.PostRepository;
 import com.example.socialapi.repository.UserRepository;
 import com.example.socialapi.response.ApiResponse;
 import com.example.socialapi.response.PageResponse;
+import com.example.socialapi.response.UserPostRequest;
 import com.example.socialapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +22,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -32,6 +34,9 @@ public class PostServiceImpl implements PostService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Override
     public PageResponse<UserPost> getAllPosts(int page, int size) {
@@ -71,8 +76,20 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PageResponse<UserPost> updatePost(Long id, int page, int size) {
-        return null;
+    public UserPost updatePost(Long id, UserPostRequest postRequest, AppUserDetails user) {
+        UserPost post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
+        Category category = categoryRepository.findById(postRequest.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
+        if (post.getUser().getId().equals(user.getId()) ||
+                user.getAuthorities().contains(new SimpleGrantedAuthority(RoleName.ROLE_ADMIN.toString()))){
+            post.setTitle(postRequest.getTitle());
+            post.setBody(postRequest.getBody());
+            post.setCategory(category);
+            return postRepository.save(post);
+        }
+
+        ApiResponse apiResponse = new ApiResponse(Boolean.FALSE, "You are not permitted to make changes to this post");
+        throw new UnauthorizedException(apiResponse);
     }
 
     @Override
@@ -92,8 +109,8 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostService getPost(Long id) {
-        return null;
+    public UserPost getPost(Long id) {
+        return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
     }
     private void validatePageAndSize(int page, int size){
 
