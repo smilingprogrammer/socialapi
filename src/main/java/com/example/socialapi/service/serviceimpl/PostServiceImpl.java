@@ -15,6 +15,7 @@ import com.example.socialapi.repository.UserRepository;
 import com.example.socialapi.response.ApiResponse;
 import com.example.socialapi.response.PageResponse;
 import com.example.socialapi.response.UserPostRequest;
+import com.example.socialapi.response.UserPostResponse;
 import com.example.socialapi.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -109,9 +110,53 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public UserPostResponse addPost(UserPostRequest postRequest, AppUserDetails user){
+
+        AppUserDetails appUser = userRepository.findById(currentUser.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(USER, ID, 1L));
+        Category category = categoryRepository.findById(postRequest.getCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
+
+        List<Tag> tags = new ArrayList<>(postRequest.getTags().size());
+
+        for (String name : postRequest.getTags()) {
+            Tag tag = tagRepository.findByName(name);
+            tag = tag == null ? tagRepository.save(new Tag(name)) : tag;
+
+            tags.add(tag);
+        }
+
+        UserPost post = new UserPost();
+        post.setBody(postRequest.getBody());
+        post.setTitle(postRequest.getTitle());
+        post.setCategory(category);
+        post.setUser(user);
+        post.setTags(tags);
+
+        Post newPost = postRepository.save(post);
+
+        PostResponse postResponse = new PostResponse();
+
+        postResponse.setTitle(newPost.getTitle());
+        postResponse.setBody(newPost.getBody());
+        postResponse.setCategory(newPost.getCategory().getName());
+
+        List<String> tagNames = new ArrayList<>(newPost.getTags().size());
+
+        for (Tag tag : newPost.getTags()) {
+            tagNames.add(tag.getName());
+        }
+
+        postResponse.setTags(tagNames);
+
+        return postResponse;
+    }
+
+    @Override
     public UserPost getPost(Long id) {
         return postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException(POST, ID, id));
     }
+
     private void validatePageAndSize(int page, int size){
 
         if (page < 0){
