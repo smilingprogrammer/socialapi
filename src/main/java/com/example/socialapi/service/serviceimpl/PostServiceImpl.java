@@ -5,6 +5,7 @@ import com.example.socialapi.constant.AppUtils;
 import com.example.socialapi.exception.BadRequestException;
 import com.example.socialapi.exception.ResourceNotFoundException;
 import com.example.socialapi.exception.UnauthorizedException;
+import com.example.socialapi.model.AppUser;
 import com.example.socialapi.model.AppUserDetails;
 import com.example.socialapi.model.Category;
 import com.example.socialapi.model.UserPost;
@@ -23,6 +24,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -112,7 +115,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public UserPostResponse addPost(UserPostRequest postRequest, AppUserDetails user){
 
-        AppUserDetails appUser = userRepository.findById(currentUser.getId())
+        AppUserDetails appUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException(USER, ID, 1L));
         Category category = categoryRepository.findById(postRequest.getCategoryId())
                 .orElseThrow(() -> new ResourceNotFoundException(CATEGORY, ID, postRequest.getCategoryId()));
@@ -130,12 +133,12 @@ public class PostServiceImpl implements PostService {
         post.setBody(postRequest.getBody());
         post.setTitle(postRequest.getTitle());
         post.setCategory(category);
-        post.setUser(user);
+        post.setUser(appUser);
         post.setTags(tags);
 
         Post newPost = postRepository.save(post);
 
-        PostResponse postResponse = new PostResponse();
+        UserPostResponse postResponse = new UserPostResponse();
 
         postResponse.setTitle(newPost.getTitle());
         postResponse.setBody(newPost.getBody());
