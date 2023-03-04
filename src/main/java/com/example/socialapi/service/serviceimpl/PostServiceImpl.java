@@ -136,7 +136,7 @@ public class PostServiceImpl implements PostService {
         post.setUser(appUser);
         post.setTags(tags);
 
-        Post newPost = postRepository.save(post);
+        UserPost newPost = postRepository.save(post);
 
         UserPostResponse postResponse = new UserPostResponse();
 
